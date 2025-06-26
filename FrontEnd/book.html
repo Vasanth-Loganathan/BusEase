@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px;
+        }
+        .navbar {
+            padding: 20px 0;
+            background-color: #343a40;
+        }
+        .navbar-brand {
+            font-size: 2rem;
+            color: white;
+        }
+        .navbar-nav .nav-link {
+            font-size: 1.2rem;
+            padding: 10px 15px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="./logo.png" alt="Logo" width="50" height="40" class="d-inline-block align-text-top">
+                BlueBus
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div id="booking-summary" class="card shadow-lg my-5" style="display: none;">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Booking Summary</h2>
+                <div id="booking-details">
+                    <p><strong>Transaction ID:</strong> <span id="transaction-id"></span></p>
+                    <p><strong>Bus Name:</strong> <span id="bus-name"></span></p>
+                    <p><strong>Operator Name:</strong> <span id="operator-name"></span></p>
+                    <p><strong>Source:</strong> <span id="source"></span></p>
+                    <p><strong>Destination:</strong> <span id="destination"></span></p>
+                    <p><strong>Departure Time:</strong> <span id="departure-time"></span></p>
+                    <p><strong>Arrival Time:</strong> <span id="arrival-time"></span></p>
+                    <p><strong>Selected Seats:</strong> <span id="selected-seats"></span></p>
+                    <p><strong>Total Price:</strong> <span id="total-price"></span></p>
+                    <p><strong>User ID:</strong> <span id="user-id"></span></p>
+                    <div id="payment-status-section" style="display: none;">
+                        <hr>
+                        <h3 class="text-center">Payment Status</h3>
+                        <p id="payment-message" class="text-center"></p>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button id="confirm-payment" class="btn btn-success">Confirm Payment</button>
+                    <p id="booking-status-message" class="mt-3"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="error-message" class="alert alert-danger my-5" style="display: none;"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script>
+        const bookingSummarySection = document.getElementById('booking-summary');
+        const bookingDetailsDiv = document.getElementById('booking-details');
+        const transactionIdSpan = document.getElementById('transaction-id');
+        const busNameSpan = document.getElementById('bus-name');
+        const operatorNameSpan = document.getElementById('operator-name');
+        const sourceSpan = document.getElementById('source');
+        const destinationSpan = document.getElementById('destination');
+        const departureTimeSpan = document.getElementById('departure-time');
+        const arrivalTimeSpan = document.getElementById('arrival-time');
+        const selectedSeatsSpan = document.getElementById('selected-seats');
+        const totalPriceSpan = document.getElementById('total-price');
+        const confirmPaymentButton = document.getElementById('confirm-payment');
+        const bookingStatusMessage = document.getElementById('booking-status-message');
+        const errorMessageDiv = document.getElementById('error-message');
+        const userIdSpan = document.getElementById('user-id');
+
+        //Payment status
+        const paymentStatusSection = document.getElementById('payment-status-section');
+        const paymentMessageSpan = document.getElementById('payment-message');
+
+        let bookingData = null;
+
+        // Function to display error message
+        function displayErrorMessage(message) {
+            errorMessageDiv.textContent = message;
+            errorMessageDiv.style.display = 'block';
+            bookingSummarySection.style.display = 'none';
+        }
+
+        // Function to display booking details
+        function displayBookingDetails() {
+            if (bookingData) {
+                transactionIdSpan.textContent = bookingData.bookingId;
+                busNameSpan.textContent = bookingData.busName;
+                operatorNameSpan.textContent = bookingData.operatorName;
+                sourceSpan.textContent = bookingData.source_name;  // Corrected field name
+                destinationSpan.textContent = bookingData.destination_name;  // Corrected field name
+                departureTimeSpan.textContent = bookingData.departure_time;
+                arrivalTimeSpan.textContent = bookingData.arrival_time;
+                selectedSeatsSpan.textContent = bookingData.selectedSeats.join(', ');
+                totalPriceSpan.textContent = bookingData.total_amount; // Corrected field name
+                userIdSpan.textContent = bookingData.user_id;
+                bookingSummarySection.style.display = 'block';
+            } else {
+                displayErrorMessage('No booking data available. Please try again.');
+            }
+        }
+
+        // Retrieve booking data from localStorage
+        bookingData = JSON.parse(localStorage.getItem('bookingData'));
+        if (!bookingData) {
+            displayErrorMessage('No booking data found. Please select seats and confirm booking again.');
+        } else {
+            displayBookingDetails();
+        }
+
+        confirmPaymentButton.addEventListener('click', () => {
+            bookingStatusMessage.textContent = 'Processing your booking...';
+            bookingStatusMessage.style.color = 'orange';
+            // Disable the button to prevent multiple clicks
+            confirmPaymentButton.disabled = true;
+
+            // Get the token from localStorage
+            const token = localStorage.getItem('token');
+            if (!token) {
+                displayErrorMessage('Authentication token is missing. Please log in again.');
+                return;
+            }
+            // Prepare the booking data payload for the server
+            const bookingPayload = {
+                scheduleId: bookingData.scheduleId,
+                startLocationId: bookingData.source_name,  // Use the stored startLocationId
+                endLocationId: bookingData.destination_name,      // Use the stored endLocationId
+                seatNumber: bookingData.selectedSeats,
+            };
+
+            fetch('http://localhost:5000/api/bookings/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(bookingPayload),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || 'Booking failed');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Booking successful:', data);
+                bookingStatusMessage.textContent = 'Booking confirmed successfully!';
+                bookingStatusMessage.style.color = 'green';
+                paymentStatusSection.style.display = 'block';
+                paymentMessageSpan.textContent = "Payment was successful!";
+                // Clear the booking data from localStorage after successful booking
+                localStorage.removeItem('bookingData');
+
+                bookingData = data;
+                displayBookingDetails();
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                bookingStatusMessage.textContent = `Booking failed: ${error.message}`;
+                bookingStatusMessage.style.color = 'red';
+                confirmPaymentButton.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

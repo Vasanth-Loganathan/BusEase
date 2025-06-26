@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px;
+        }
+        .navbar {
+            background-color: #343a40;
+        }
+        .navbar-brand {
+            color: white;
+            font-size: 2rem;
+        }
+        .navbar-nav .nav-link {
+            color: white;
+            font-size: 1.2rem;
+            padding: 10px 15px;
+        }
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn-cancel:hover {
+            background-color: #c82333;
+        }
+        .no-bookings {
+            text-align: center;
+            font-size: 1.4rem;
+            color: #6c757d;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="./logo.png" alt="Logo" width="50" height="40" class="d-inline-block align-text-top">
+                BlueBus
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">My Bookings</h1>
+        <div id="bookings-list">
+        </div>
+        <div id="no-bookings" class="no-bookings" style="display: none;">
+            No bookings found.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script>
+        const bookingsList = document.getElementById('bookings-list');
+        const noBookingsMessage = document.getElementById('no-bookings');
+
+        function displayBookings(bookings) {
+            if (!Array.isArray(bookings) || bookings.length === 0) {
+                noBookingsMessage.style.display = 'block';
+                bookingsList.innerHTML = '';
+                return;
+            } else {
+                noBookingsMessage.style.display = 'none';
+            }
+
+            bookingsList.innerHTML = '';
+
+            bookings.forEach(booking => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const header = document.createElement('div');
+                header.className = 'card-header';
+                header.textContent = `Booking ID: ${booking.booking_id}`;
+
+                const body = document.createElement('div');
+                body.className = 'card-body';
+
+                const details = document.createElement('div');
+                details.innerHTML = `
+                    <p><strong>Source:</strong> ${booking.source}</p>
+                    <p><strong>Destination:</strong> ${booking.destination}</p>
+                    <p><strong>Departure Date:</strong> ${booking.departure_date}</p>
+                    <p><strong>Departure Time:</strong> ${booking.departure_time}</p>
+                    <p><strong>Arrival Time:</strong> ${booking.arrival_time}</p>
+                    <p><strong>Seat Number:</strong> ${booking.seat_number}</p>
+                    <p><strong>Total Amount:</strong> ${booking.total_amount}</p>
+                    <p><strong>Status:</strong> ${booking.status}</p>
+                `;
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'text-center mt-3';
+
+                if (new Date(booking.departure_date) > new Date() && booking.status !== 'Cancelled') {
+                    const cancelButton = document.createElement('button');
+                    cancelButton.className = 'btn-cancel';
+                    cancelButton.textContent = 'Cancel Booking';
+                    cancelButton.dataset.bookingId = booking.booking_id;
+
+                    cancelButton.addEventListener('click', () => {
+                        const bookingId = cancelButton.dataset.bookingId;
+                        const confirmation = confirm(`Are you sure you want to cancel booking ${bookingId}?`);
+                        if (confirmation) {
+                            cancelBooking(bookingId);
+                        }
+                    });
+                    buttonContainer.appendChild(cancelButton);
+                }
+
+                body.appendChild(details);
+                body.appendChild(buttonContainer);
+                card.appendChild(header);
+                card.appendChild(body);
+                bookingsList.appendChild(card);
+            });
+        }
+
+        function fetchBookings() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please log in to view your bookings.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            fetch('http://localhost:5000/api/bookings/mybookings', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    //  Important:  Parse the response as text first to check for HTML
+                    return response.text().then(text => {
+                        try {
+                            //  Then try to parse the text as JSON
+                            const data = JSON.parse(text);
+                            //  If parsing as JSON is successful, return the data
+                            return { ok: false, data: data }; // Wrap the parsed JSON
+                        } catch (err) {
+                            //  If parsing as JSON fails, it's likely HTML, so reject with the text
+                            throw new Error(`Failed to fetch bookings: ${text}`);
+                        }
+                    });
+                }
+                return response.json(); // If response is OK, assume JSON
+            })
+            .then(data => {
+                if (data.ok === false) {
+                  displayBookings(data.data);
+                }
+                else {
+                  displayBookings(data);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching bookings:', error);
+                alert(error.message);
+                bookingsList.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
+            });
+        }
+
+        function cancelBooking(bookingId) {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please log in to cancel your booking.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            fetch(`http://localhost:5000/api/bookings/booking/${bookingId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || 'Failed to cancel booking');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                fetchBookings();
+            })
+            .catch(error => {
+                console.error('Error cancelling booking:', error);
+                alert(error.message);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchBookings);
+    </script>
+</body>
+</html>

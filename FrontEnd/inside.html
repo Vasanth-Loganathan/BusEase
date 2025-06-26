@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Ticket Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background-image: url('https://s3.rdbuz.com/images/webplatform/india/Homepage%20header-03%202.webp');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+        }
+
+        .hero-section .container {
+            z-index: 10;
+        }
+
+        .hero-section .search-form {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 8px;
+        }
+
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 40px 0;
+        }
+
+        .footer a {
+            color: #f8f9fa;
+            text-decoration: none;
+        }
+        .navbar {
+        padding: 20px 0;
+        }
+
+        .navbar-brand {
+            font-size: 2rem;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 1.2rem;
+            padding: 10px 15px;
+        }
+
+        #search-results {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg- fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="./logo.png" alt="Logo" width="50" height="40" class="d-inline-block align-text-top">
+                BlueBus</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="mybookings.html">My Bookings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 mb-3">Find Your Perfect Bus Journey</h1>
+            <p class="lead mb-4">Book bus tickets online for a smooth and comfortable travel experience.</p>
+
+            <div class="search-form mx-auto w-75">
+                <form id="search-form"  method="GET">
+                    <div class="row g-3">
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label for="from" class="form-label">From</label>
+                            <input type="text" class="form-control" id="from" name="from" placeholder="Enter Source" required>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label for="to" class="form-label">To</label>
+                            <input type="text" class="form-control" id="to" name="to" placeholder="Enter Destination" required>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <button type="submit" class="btn btn-danger w-100">Search Buses</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section id="search-results" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="mb-4 text-center">Search Results</h2>
+            <div id="results-container" class="row">
+                    </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="mb-4">Popular Routes</h2>
+            <div class="row">
+                <div class="col-md-4 mb-3 popular-route-card" data-from="Chennai" data-to="Coimbatore">
+                    <div class="card">
+                        <img src="./(Chennai_-_Coimbatore).png" class="card-img-top" alt="Route 1">
+                        <div class="card-body">
+                            <h5 class="card-title">Chennai to Coimbatore</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3 popular-route-card" data-from="Chennai" data-to="Madurai">
+                    <div class="card">
+                        <img src="./_(Madurai-Chennai)_.jpg" class="card-img-top" alt="Route 2">
+                        <div class="card-body">
+                            <h5 class="card-title">Chennai to Madurai</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3 popular-route-card" data-from="Chennai" data-to="Tirunelveli">
+                    <div class="card">
+                        <img src="./(Tirunelveli-Chennai).jpg" class="card-img-top" alt="Route 3">
+                        <div class="card-body">
+                            <h5 class="card-title">Chennai to Tirunelveli</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p>&copy; 2025 BusBooking. All rights reserved.</p>
+            <p>
+                <a href="#">Privacy Policy</a> |
+                <a href="#">Terms of Use</a> |
+                <a href="#">Contact</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script>
+    const searchForm = document.getElementById('search-form');
+    const searchResultsSection = document.getElementById('search-results');
+    const resultsContainer = document.getElementById('results-container');
+    const popularRouteCards = document.querySelectorAll('.popular-route-card');
+
+    // Assume this function is called after a successful login
+    function handleLoginSuccess(loginResult) {
+        //  Store the token from the login result in localStorage.
+        const token = loginResult.token;  // Adjust 'loginResult.token'  based on your actual API response structure
+        localStorage.setItem('token', token);
+        console.log('Token stored:', token);
+        //  Redirect to home page or perform other actions as needed.
+    }
+
+
+
+    searchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const from = document.getElementById('from').value.trim();
+        const to = document.getElementById('to').value.trim();
+        const date = document.getElementById('date').value;
+
+
+
+        fetch(`http://localhost:5000/api/buses/search?source=${from}&destination=${to}&date=${date}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch search results');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displaySearchResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultsContainer.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                searchResultsSection.style.display = 'block';
+            });
+    });
+
+    function displaySearchResults(results) {
+        resultsContainer.innerHTML = '';
+        if (results && results.length > 0) {
+            results.forEach(bus => {
+                const card = document.createElement('div');
+                card.className = 'col-md-6 mb-4';
+                card.innerHTML = `
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">${bus.bus_name}</h5>
+                            <p class="card-text">Operator: ${bus.operator_name}</p>
+                            <p class="card-text">From: ${bus.source}</p>
+                            <p class="card-text">To: ${bus.destination}</p>
+                            <p class="card-text">Departure: ${bus.departure_time}</p>
+                            <p class="card-text">Arrival: ${bus.arrival_time}</p>
+                            <a href="seats.html?scheduleId=${bus.schedule_id}" class="btn btn-primary">Book Now</a>
+                        </div>
+                    </div>
+                `;
+                resultsContainer.appendChild(card);
+            });
+            searchResultsSection.style.display = 'block';
+
+
+
+        } else {
+            resultsContainer.innerHTML = `<div class="alert alert-info">No buses found for the selected route and date.</div>`;
+            searchResultsSection.style.display = 'block';
+        }
+    }
+
+    popularRouteCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const from = card.dataset.from;
+            const to = card.dataset.to;
+            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            //window.location.href = `seats.html?from=${from}&to=${to}&date=${today}`;
+             fetch(`http://localhost:5000/api/buses/search?source=${from}&destination=${to}&date=${today}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch search results');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displaySearchResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                resultsContainer.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+                searchResultsSection.style.display = 'block';
+            });
+        });
+    });
+    </script>
+</body>
+</html>
+
