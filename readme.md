@@ -109,12 +109,3 @@ BusEase/
 ├── relational_schema.sql
 └── README.md
 ```
-
----
-
-## 📌 Author
-
-**Vasanth Loganathan**  
-🔗 [GitHub](https://github.com/Vasanth-Loganathan) • [LinkedIn](https://linkedin.com/in/vasanthloganathan/)
-
----
